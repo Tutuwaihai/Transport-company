@@ -1,6 +1,6 @@
 package com.transportcompany.transport_app.client
 
-import com.transportcompany.transport_app.dto.Post
+import com.transportcompany.transport_app.dto.LoginRequest
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable
 interface JSONPlaceHolderClient {
 
     @GetMapping("/posts")
-    fun getPosts(): List<Post>
+    fun getPosts(): List<LoginRequest>
 
     @GetMapping("/posts/{postId}", produces = ["application/json"])
-    fun getPostById(@PathVariable("postId") postId: Long): Post
+    fun getPostById(@PathVariable("postId") postId: Long): LoginRequest
 }

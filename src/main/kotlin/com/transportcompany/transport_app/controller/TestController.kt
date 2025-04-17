@@ -1,7 +1,7 @@
 package com.transportcompany.transport_app.controller
 
 import com.transportcompany.transport_app.client.JSONPlaceHolderClient
-import com.transportcompany.transport_app.dto.Post
+import com.transportcompany.transport_app.dto.LoginRequest
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -14,8 +14,8 @@ class TestController(
 ) {
 
     @GetMapping("/posts")
-    fun getAllPosts(): List<Post> = jsonClient.getPosts()
+    fun getAllPosts(): List<LoginRequest> = jsonClient.getPosts()
 
     @GetMapping("/posts/{id}")
-    fun getPost(@PathVariable id: Long): Post = jsonClient.getPostById(id)
+    fun getPost(@PathVariable id: Long): LoginRequest = jsonClient.getPostById(id)
 }
