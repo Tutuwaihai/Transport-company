@@ -1,18 +1,19 @@
 package com.transportcompany.transport_app.client
 
+import com.transportcompany.transport_app.dto.AuthResponse
 import com.transportcompany.transport_app.dto.LoginRequest
 import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 
 
+@FeignClient(name = "authClient", url = "http://10.54.14.20:8081/api/v4/employees")
+interface AuthClient  {
 
-@FeignClient(name = "jsonPlaceholder", url = "https://jsonplaceholder.typicode.com/")
-interface JSONPlaceHolderClient {
-
-    @GetMapping("/posts")
-    fun getPosts(): List<LoginRequest>
-
-    @GetMapping("/posts/{postId}", produces = ["application/json"])
-    fun getPostById(@PathVariable("postId") postId: Long): LoginRequest
+    @PostMapping("/auth/login")
+    fun login(
+        @RequestHeader("NrgApi-DevToken") devToken: String,
+        @RequestBody request: LoginRequest
+    ): AuthResponse
 }
