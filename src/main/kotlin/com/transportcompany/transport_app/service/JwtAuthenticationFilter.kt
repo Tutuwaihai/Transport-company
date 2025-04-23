@@ -1,5 +1,7 @@
 package com.transportcompany.transport_app.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.transportcompany.transport_app.dto.ApiResponse
 import com.transportcompany.transport_app.exception.InvalidJwtTokenException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -12,7 +14,8 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class JwtAuthenticationFilter(
-    private val jwtService: JwtService
+    private val jwtService: JwtService,
+    private val objectMapper: ObjectMapper
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -20,6 +23,13 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+        val requestPath = request.requestURI
+
+        if (requestPath.startsWith("/auth/login")) {
+            return filterChain.doFilter(request, response)
+        }
+
+
         val authHeader = request.getHeader("Authorization")
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return filterChain.doFilter(request, response)
@@ -31,16 +41,16 @@ class JwtAuthenticationFilter(
         } catch (e: InvalidJwtTokenException) {
             response.status = HttpStatus.FORBIDDEN.value()
             response.contentType = "application/json"
-            response.writer.write(
-                """
-                {
-                  "code": 403,
-                  "status": "FORBIDDEN",
-                  "message": "${e.message}",
-                  "data": null
-                }
-                """.trimIndent()
+
+            val errorResponse = ApiResponse(
+                code = 403,
+                status = HttpStatus.FORBIDDEN,
+                message = e.message ?: "Error token",
+                data = null
             )
+
+            val json = objectMapper.writeValueAsString(errorResponse)
+            response.writer.write(json)
             return
         }
 

@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-//@EnableMethodSecurity @PreAuthorize???
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter
 ) {
@@ -23,7 +22,7 @@ class SecurityConfig(
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/api/v4/employees/auth/login").permitAll()
+                    .requestMatchers("/auth/login").permitAll()
                     .anyRequest().authenticated()
             }
             .sessionManagement {
