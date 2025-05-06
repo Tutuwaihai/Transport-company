@@ -1,9 +1,9 @@
 package com.transportcompany.transport_app.dto
 
 data class TransportDto(
-    val id: Long,
-    val mark: String,
-    val licensePlate: String,
-    val tonnage: Double,
-    val cityTitle: String
+    var id: Long,
+    var mark: String?,
+    var licensePlate: String?,
+    var tonnage: Double?,
+    var cityTitle: String?
 )

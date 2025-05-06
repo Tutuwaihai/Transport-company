@@ -25,7 +25,7 @@ class JwtAuthenticationFilter(
     ) {
         val requestPath = request.requestURI
 
-        if (requestPath.startsWith("/auth/login")) {
+        if (requestPath.startsWith("/auth/")) {
             return filterChain.doFilter(request, response)
         }
 
@@ -36,9 +36,12 @@ class JwtAuthenticationFilter(
         }
 
         val token = authHeader.removePrefix("Bearer ").trim()
+        println(">>> TOKEN: $token")
         try {
             jwtService.isTokenValid(token)
+            println(">>> Token valid")
         } catch (e: InvalidJwtTokenException) {
+            println(">>> Invalid token: ${e.message}")
             response.status = HttpStatus.FORBIDDEN.value()
             response.contentType = "application/json"
 
@@ -57,6 +60,7 @@ class JwtAuthenticationFilter(
 
     val username = jwtService.extractUsername(token)
     val authorities = jwtService.extractAuthorities(token)
+        println(">>> AUTH: username=$username, authorities=$authorities")
 
     if (SecurityContextHolder.getContext().authentication == null) {
         val authToken = UsernamePasswordAuthenticationToken(username, null, authorities)

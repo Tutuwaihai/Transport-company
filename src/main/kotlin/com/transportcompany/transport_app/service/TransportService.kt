@@ -1,22 +1,30 @@
 package com.transportcompany.transport_app.service
 
+
 import com.transportcompany.transport_app.dto.TransportDto
+import com.transportcompany.transport_app.dto.mappers.TransportMapper
 import com.transportcompany.transport_app.repository.TransportRepository
 import org.springframework.stereotype.Service
 
 @Service
 class TransportService(
-    private val transportRepository: TransportRepository
+    private val transportRepository: TransportRepository,
+    private val transportMapper: TransportMapper
 ) {
     fun getAllTransport(): List<TransportDto> {
-        return transportRepository.findAllTransport().map { row ->
+        val transports = transportRepository.findAllTransport()
+        return transports.map {
             TransportDto(
-                id = (row["id"] as Number).toLong(),
-                mark = row["mark"] as? String ?: "Без марки",
-                licensePlate = row["licensePlate"] as? String ?: "Нет номера",
-                tonnage = (row["tonnage"] as? Number)?.toDouble() ?: 0.0,
-                cityTitle = row["cityTitle"] as? String ?: "Неизвестный город"
+                id = it.id,
+                mark = it.mark,
+                licensePlate = it.licensePlate,
+                tonnage = it.tonnage,
+                cityTitle = it.city?.title ?: "нет города"
             )
         }
     }
+//    fun getAllTransport(): List<TransportDto> {
+//        val drivers = transportRepository.findAllTransport()
+//        return transportMapper.toDtoList(drivers)
+//    }
 }

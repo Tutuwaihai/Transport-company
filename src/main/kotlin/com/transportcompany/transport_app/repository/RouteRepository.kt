@@ -7,8 +7,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface RouteRepository : JpaRepository<Route, Long> {
-    @Query("SELECT r " +
-            "FROM Route r " +
-            "WHERE r.isDeleted = 0")
-    fun findAllActiveRoutes(): List<Route>
+    fun findAllByIsDeleted(isDeleted: Int = 0): List<Route>
 }

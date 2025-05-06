@@ -1,7 +1,8 @@
 package com.transportcompany.transport_app.service
 
-import com.transportcompany.transport_app.dto.CreateTripRequest
-import com.transportcompany.transport_app.dto.UpdateTripRequest
+import com.transportcompany.transport_app.dto.TripRequest
+import com.transportcompany.transport_app.dto.TripResponse
+import com.transportcompany.transport_app.dto.mappers.TripUnionMapper
 import com.transportcompany.transport_app.model.TripUnion
 import com.transportcompany.transport_app.repository.TripUnionRepository
 import jakarta.persistence.EntityNotFoundException
@@ -11,43 +12,33 @@ import java.time.LocalDateTime
 @Service
 class TripUnionService(
     private val tripUnionRepository: TripUnionRepository,
+    private val tripUnionMapper: TripUnionMapper
 ) {
 
-    fun createTrip(request: CreateTripRequest): TripUnion {
-        val tripUnion = TripUnion(
+    fun createTrip(request: TripRequest): TripResponse {
+        val entity = tripUnionMapper.toEntity(request).copy(
             createDate = LocalDateTime.now(),
-            idFirmCustomer = request.idFirmCustomer!!,
-            idFirmCarrier = request.idFirmCarrier!!,
-            idRoute = request.idRoute!!,
-            idEmployee = request.idEmployee!!,
-            idTransport = request.idTransport!!,
-            idTrailer = request.idTrailer,
-            costs = request.costs,
-            description = request.description,
-            isActive = 0
+            isActive = 0,
+            isDeleted = 0
         )
-        return tripUnionRepository.save(tripUnion)
+        val saved = tripUnionRepository.save(entity)
+        return tripUnionMapper.toResponse(saved)
     }
 
-    fun updateTrip(request: UpdateTripRequest): TripUnion {
-        val tripUnion = tripUnionRepository.findById(request.id)
-            .orElseThrow { EntityNotFoundException("Путевой лист с id=${request.id} не найден") }
+    fun updateTrip(id: Long, request: TripRequest): TripResponse {
+        val entity = tripUnionRepository.findById(id)
+            .orElseThrow { EntityNotFoundException("Путевой лист с id=$id не найден") }
 
-        tripUnion.modifyDate = LocalDateTime.now()
-        tripUnion.idFirmCustomer = request.idFirmCustomer!!
-        tripUnion.idFirmCarrier = request.idFirmCarrier!!
-        tripUnion.idRoute = request.idRoute!!
-        tripUnion.idEmployee = request.idEmployee!!
-        tripUnion.idTransport = request.idTransport!!
-        tripUnion.idTrailer = request.idTrailer
-        tripUnion.costs = request.costs
-        tripUnion.description = request.description
+        tripUnionMapper.updateTripUnionFromRequest(request, entity)
+        entity.modifyDate = LocalDateTime.now()
+        val updated = tripUnionRepository.save(entity)
 
-        return tripUnionRepository.save(tripUnion)
+        return tripUnionMapper.toResponse(updated)
     }
 
-    fun getTripUnionById(id: Long): TripUnion {
-        return tripUnionRepository.findById(id)
+    fun getTripUnionById(id: Long): TripResponse {
+        val entity = tripUnionRepository.findById(id)
             .orElseThrow { NoSuchElementException("Путевой лист с id=$id не найден") }
+        return tripUnionMapper.toResponse(entity)
     }
 }

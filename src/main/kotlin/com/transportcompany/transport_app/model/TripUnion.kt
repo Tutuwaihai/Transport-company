@@ -17,20 +17,26 @@ data class TripUnion(
     @Column(name = "createdate")
     val createDate: LocalDateTime = LocalDateTime.now(),
 
+    @Column(name = "createuser")
+    val createUser: Long,
+
+    @Column(name = "modifyuser")
+    val modifyUser: Long,
+
     @Column(name = "isdeleted")
     val isDeleted: Int = 0,
 
     @Column(name = "idroute")
-    var idRoute: Long,
+    var idRoute: Long?,
 
     @Column(name = "idtransport")
-    var idTransport: Long,
+    var idTransport: Long?,
 
     @Column(name = "idtrailer")
     var  idTrailer: Long? = null,
 
     @Column(name = "idemployee")
-    var idEmployee: Long,
+    var idEmployee: Long?,
 
     @Column(name = "costs")
     var costs: BigDecimal? = null,
@@ -42,9 +48,9 @@ data class TripUnion(
     var isActive: Int = 0,
 
     @Column(name = "id_firm_carrier")
-    var idFirmCarrier: Long,
+    var idFirmCarrier: Long?,
 
     @Column(name = "id_firm_customer")
-    var idFirmCustomer: Long
+    var idFirmCustomer: Long?
 
 )

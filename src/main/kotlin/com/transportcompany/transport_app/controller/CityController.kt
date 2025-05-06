@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RestController
 class CityController(
     private val cityService: CityService
 ) {
-
     @GetMapping
-    fun getAllCities(): List<CityDto> {
-        return cityService.getAllCities()
-    }
+    fun getAllCities(): List<CityDto> = cityService.getAllActiveCities()
 }

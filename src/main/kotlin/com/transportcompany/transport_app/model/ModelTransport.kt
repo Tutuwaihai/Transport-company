@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(name = "model_transport")
-data class Trailer(
+data class ModelTransport(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,

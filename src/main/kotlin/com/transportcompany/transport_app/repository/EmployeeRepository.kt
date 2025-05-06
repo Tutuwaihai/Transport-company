@@ -8,18 +8,10 @@ import org.springframework.stereotype.Repository
 @Repository
 interface EmployeeRepository : JpaRepository<Employee, Long> {
 
-    @Query(
-        value = """
-            SELECT 
-                e.id AS id, 
-                e.fio AS fio, 
-                c.title AS cityTitle
-            FROM employee e
-            LEFT JOIN city c ON e.idcity = c.id
-            WHERE e.isdeleted = 0 
-              AND e.worker_type = 4
-        """,
-        nativeQuery = true
-    )
-    fun findAllDrivers(): List<Map<String, Any>>
+    @Query("""
+    SELECT e FROM Employee e
+    LEFT JOIN FETCH e.city
+    WHERE e.isDeleted = 0 AND e.workerType = 4
+""")
+    fun findAllDrivers(): List<Employee>
 }

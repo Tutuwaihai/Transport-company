@@ -28,8 +28,9 @@ data class Employee(
     val email: String? = null,
     @Column(name = "description")
     val description: String? = null,
-    @Column(name = "idcity")
-    val idCity: Long? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idcity")
+    val city: City? = null,
     @Column(name = "birthdate")
     val birthdate: LocalDate? = null,
     @Column(name = "passport_series")

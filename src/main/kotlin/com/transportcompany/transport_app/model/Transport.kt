@@ -32,8 +32,9 @@ data class Transport (
     val height: Double? = null,
     @Column(name = "length")
     val length: Double? = null,
-    @Column(name = "idcity")
-    val idcity: Long? = null,
+    @JoinColumn(name = "idcity")
+    @OneToOne
+    val city: City? = null,
     @Column(name = "description")
     val description: String? = null
 

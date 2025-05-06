@@ -3,7 +3,7 @@ package com.transportcompany.transport_app.dto
 import jakarta.validation.constraints.NotNull
 import java.math.BigDecimal
 
-data class CreateTripRequest(
+data class TripRequest(
     @field:NotNull(message = "Фирма-заказчик обязательна")
     val idFirmCustomer: Long?,
 
@@ -23,3 +23,4 @@ data class CreateTripRequest(
     val costs: BigDecimal? = null,
     val description: String? = null
 )
+

@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RestController
 class FirmController(
     private val firmService: FirmService
 ) {
-
     @GetMapping
-    fun getAllFirms(): List<FirmDto> {
-        return firmService.getAllFirms()
-    }
+    fun getAllFirms(): List<FirmDto> = firmService.getAllFirms()
 }

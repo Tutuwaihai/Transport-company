@@ -22,7 +22,7 @@ class SecurityConfig(
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/auth/**", "/cities/**", "/firms/**", "/routes/**", "/drivers/**", "/transport/**", "/trip-union/**", "/trailers/**").permitAll()
+                    .requestMatchers("/auth/**").permitAll()
                     .anyRequest().authenticated()
             }
             .sessionManagement {

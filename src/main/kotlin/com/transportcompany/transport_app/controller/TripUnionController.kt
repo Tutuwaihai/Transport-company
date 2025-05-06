@@ -1,10 +1,10 @@
 package com.transportcompany.transport_app.controller
 
-import com.transportcompany.transport_app.dto.CreateTripRequest
-import com.transportcompany.transport_app.dto.UpdateTripRequest
-import com.transportcompany.transport_app.model.TripUnion
+import com.transportcompany.transport_app.dto.TripRequest
+import com.transportcompany.transport_app.dto.TripResponse
 import com.transportcompany.transport_app.service.TripUnionService
 import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -15,24 +15,25 @@ import org.springframework.web.bind.annotation.*
 class TripUnionController(
     private val tripUnionService: TripUnionService
 ) {
+
     @PostMapping
-    fun createTripUnion(@RequestBody @Valid request: CreateTripRequest): ResponseEntity<TripUnion> {
-        val createdTripUnion = tripUnionService.createTrip(request)
-        return ResponseEntity.ok(createdTripUnion)
+    fun createTrip(@RequestBody @Valid request: TripRequest): ResponseEntity<TripResponse> {
+        val response = tripUnionService.createTrip(request)
+        return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
     @PutMapping("/{id}")
-    fun updateTripUnion(
+    fun updateTrip(
         @PathVariable id: Long,
-        @Valid @RequestBody request: UpdateTripRequest
-    ): ResponseEntity<TripUnion> {
-        val updatedTripUnion = tripUnionService.updateTrip(request)
-        return ResponseEntity.ok(updatedTripUnion)
+        @RequestBody @Valid request: TripRequest
+    ): ResponseEntity<TripResponse> {
+        val response = tripUnionService.updateTrip(id, request)
+        return ResponseEntity.ok(response)
     }
 
     @GetMapping("/{id}")
-    fun getTripUnionById(@PathVariable id: Long): ResponseEntity<TripUnion> {
-        val tripUnion = tripUnionService.getTripUnionById(id)
-        return ResponseEntity.ok(tripUnion)
+    fun getTripById(@PathVariable id: Long): ResponseEntity<TripResponse> {
+        val response = tripUnionService.getTripUnionById(id)
+        return ResponseEntity.ok(response)
     }
 }

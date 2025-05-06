@@ -1,20 +1,27 @@
 package com.transportcompany.transport_app.service
 
 import com.transportcompany.transport_app.dto.EmployeeDto
+import com.transportcompany.transport_app.dto.mappers.EmployeeMapper
 import com.transportcompany.transport_app.repository.EmployeeRepository
 import org.springframework.stereotype.Service
 
 @Service
 class EmployeeService(
-    private val employeeRepository: EmployeeRepository
+    private val employeeRepository: EmployeeRepository,
+    private val employeeMapper: EmployeeMapper
 ) {
     fun getAllDrivers(): List<EmployeeDto> {
-        return employeeRepository.findAllDrivers().map { row ->
+        val employees = employeeRepository.findAllDrivers()
+        return employees.map {
             EmployeeDto(
-                id = (row["id"] as Number).toLong(),
-                fio = row["fio"] as String,
-                cityTitle = row["cityTitle"] as? String ?: "Неизвестный город"
+                id = it.id,
+                fio = it.fio,
+                cityTitle = it.city?.title ?: "нет города"
             )
         }
     }
+//    fun getAllDrivers(): List<EmployeeDto> {
+//        val employees = employeeRepository.findAllDrivers()
+//        return employeeMapper.toDtoList(employees)
+//    }
 }
