@@ -4,6 +4,8 @@ import com.transportcompany.transport_app.dto.ApiResponse
 import feign.FeignException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.FieldError
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
@@ -42,6 +44,23 @@ class GlobalExceptionHandler {
                 message = "Ошибка при обращении к внешнему API"
             ),
             HttpStatus.resolve(e.status()) ?: HttpStatus.INTERNAL_SERVER_ERROR
+        )
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationException(ex: MethodArgumentNotValidException): ResponseEntity<ApiResponse<Any>> {
+        val errors = ex.bindingResult.allErrors
+            .filterIsInstance<FieldError>()
+            .associate { it.field to (it.defaultMessage ?: "Invalid value") }
+
+        return ResponseEntity(
+            ApiResponse(
+                code = 400,
+                status = HttpStatus.BAD_REQUEST,
+                message = "Ошибка валидации данных",
+                data = errors
+            ),
+            HttpStatus.BAD_REQUEST
         )
     }
 

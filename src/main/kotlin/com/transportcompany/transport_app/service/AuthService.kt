@@ -15,6 +15,4 @@ class AuthService(
         return authClient.login(devToken, request)
 
     }
-
-
 }

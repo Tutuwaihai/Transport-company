@@ -25,7 +25,7 @@ class JwtAuthenticationFilter(
     ) {
         val requestPath = request.requestURI
 
-        if (requestPath.startsWith("/auth/login")) {
+        if (requestPath.startsWith("/auth/")) {
             return filterChain.doFilter(request, response)
         }
 
