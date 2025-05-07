@@ -1,9 +1,9 @@
 package com.transportcompany.transport_app.service
 
-import com.transportcompany.transport_app.dto.TripRequest
-import com.transportcompany.transport_app.dto.TripResponse
+
+import com.transportcompany.transport_app.dto.TripUnionRequest
+import com.transportcompany.transport_app.dto.TripUnionResponse
 import com.transportcompany.transport_app.dto.mappers.TripUnionMapper
-import com.transportcompany.transport_app.model.TripUnion
 import com.transportcompany.transport_app.repository.TripUnionRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
@@ -15,7 +15,7 @@ class TripUnionService(
     private val tripUnionMapper: TripUnionMapper
 ) {
 
-    fun createTrip(request: TripRequest): TripResponse {
+    fun createTrip(request: TripUnionRequest): TripUnionResponse {
         val entity = tripUnionMapper.toEntity(request).copy(
             createDate = LocalDateTime.now(),
             isActive = 0,
@@ -25,7 +25,7 @@ class TripUnionService(
         return tripUnionMapper.toResponse(saved)
     }
 
-    fun updateTrip(id: Long, request: TripRequest): TripResponse {
+    fun updateTrip(id: Long, request: TripUnionRequest): TripUnionResponse {
         val entity = tripUnionRepository.findById(id)
             .orElseThrow { EntityNotFoundException("Путевой лист с id=$id не найден") }
 
@@ -36,7 +36,7 @@ class TripUnionService(
         return tripUnionMapper.toResponse(updated)
     }
 
-    fun getTripUnionById(id: Long): TripResponse {
+    fun getTripUnionById(id: Long): TripUnionResponse {
         val entity = tripUnionRepository.findById(id)
             .orElseThrow { NoSuchElementException("Путевой лист с id=$id не найден") }
         return tripUnionMapper.toResponse(entity)

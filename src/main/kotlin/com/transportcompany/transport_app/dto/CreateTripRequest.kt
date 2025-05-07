@@ -1,20 +1,16 @@
 package com.transportcompany.transport_app.dto
 
-import com.transportcompany.transport_app.model.City
-import com.transportcompany.transport_app.model.TripType
-import com.transportcompany.transport_app.model.Warehouse
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 
-data class TripResponse(
-    val id: Long,
+data class CreateTripRequest(
     val description: String?,
-    val cityFrom: City?,
-    val cityTo: City?,
-    val warehouseFrom: Warehouse?,
-    val warehouseTo: Warehouse?,
-    val tripType: TripType,
+    val cityFromId: Long,
+    val cityToId: Long,
+    val warehouseFromId: Long,
+    val warehouseToId: Long,
+    val tripTypeId: Long,
     val dispatchDate: LocalDateTime?,
     val arrivalDate: LocalDateTime?,
     val expectedDate: LocalDateTime?,
@@ -23,7 +19,7 @@ data class TripResponse(
     val state: String?,
     val costs: BigDecimal?,
     val isCityCosts: Boolean,
-    val employee: Long?,
-    val transport: Long?,
+    val employeeId: Long?,
+    val transportId: Long?,
     val cargoSeal: String?
 )

@@ -1,7 +1,8 @@
 package com.transportcompany.transport_app.controller
 
-import com.transportcompany.transport_app.dto.TripRequest
-import com.transportcompany.transport_app.dto.TripResponse
+
+import com.transportcompany.transport_app.dto.TripUnionRequest
+import com.transportcompany.transport_app.dto.TripUnionResponse
 import com.transportcompany.transport_app.service.TripUnionService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -17,7 +18,7 @@ class TripUnionController(
 ) {
 
     @PostMapping
-    fun createTrip(@RequestBody @Valid request: TripRequest): ResponseEntity<TripResponse> {
+    fun createTrip(@RequestBody @Valid request: TripUnionRequest): ResponseEntity<TripUnionResponse> {
         val response = tripUnionService.createTrip(request)
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
@@ -25,14 +26,14 @@ class TripUnionController(
     @PutMapping("/{id}")
     fun updateTrip(
         @PathVariable id: Long,
-        @RequestBody @Valid request: TripRequest
-    ): ResponseEntity<TripResponse> {
+        @RequestBody @Valid request: TripUnionRequest
+    ): ResponseEntity<TripUnionResponse> {
         val response = tripUnionService.updateTrip(id, request)
         return ResponseEntity.ok(response)
     }
 
     @GetMapping("/{id}")
-    fun getTripById(@PathVariable id: Long): ResponseEntity<TripResponse> {
+    fun getTripById(@PathVariable id: Long): ResponseEntity<TripUnionResponse> {
         val response = tripUnionService.getTripUnionById(id)
         return ResponseEntity.ok(response)
     }
