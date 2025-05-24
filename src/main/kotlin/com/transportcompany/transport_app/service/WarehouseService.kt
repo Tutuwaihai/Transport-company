@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service
 @Service
 class WarehouseService(
     private val wareHouseRepository: WarehouseRepository,
-    private val wareHouseMapper: WarehouseMapper
+    private val warehouseMapper: WarehouseMapper
 ) {
     fun getByCity(cityId: Long): List<WarehouseDto> =
-        wareHouseMapper.toWareHouseDtoList(wareHouseRepository.findAllByCityId(cityId))
+        warehouseMapper.toWareHouseDtoList(wareHouseRepository.findAllByCityId(cityId))
 }

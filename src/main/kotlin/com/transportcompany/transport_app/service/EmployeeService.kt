@@ -12,16 +12,6 @@ class EmployeeService(
 ) {
     fun getAllDrivers(): List<EmployeeDto> {
         val employees = employeeRepository.findAllDrivers()
-        return employees.map {
-            EmployeeDto(
-                id = it.id,
-                fio = it.fio,
-                cityTitle = it.city?.title ?: "нет города"
-            )
-        }
+        return employeeMapper.toDtoList(employees)
     }
-//    fun getAllDrivers(): List<EmployeeDto> {
-//        val employees = employeeRepository.findAllDrivers()
-//        return employeeMapper.toDtoList(employees)
-//    }
 }

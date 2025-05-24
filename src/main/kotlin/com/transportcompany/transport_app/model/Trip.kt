@@ -36,19 +36,19 @@ data class Trip(
     var tripType: TripType,
 
     @Column(name = "dispatchdate")
-    var dispatchDate: Date,
+    var dispatchDate: Date? = null,
 
     @Column(name = "arrivaldate")
-    var arrivalDate: Date,
+    var arrivalDate: Date? = null,
 
     @Column(name = "expecteddate")
-    var expectedDate: Date,
+    var expectedDate: Date? = null,
 
     @Column(name = "docnum")
     var docNum: String,
 
     @Column(name = "is_transit")
-    var isTransit: Boolean,
+    var isTransit: Int,
 
     @Column(name = "state")
     var state: Int,
@@ -57,13 +57,13 @@ data class Trip(
     var costs: BigDecimal,
 
     @Column(name = "is_city_costs")
-    var isCityCosts: Boolean,
+    var isCityCosts: Int,
 
     @Column(name = "idemployee")
-    val idEmployee: Long? = null,
+    var idEmployee: Long? = null,
 
     @Column(name = "idtransport")
-    val idTransport: Long? = null,
+    var idTransport: Long? = null,
 
     @Column(name = "cargo_seal")
     var cargoSeal: String? = null,

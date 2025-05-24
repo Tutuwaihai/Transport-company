@@ -68,5 +68,11 @@ class JwtService(
         val keyBytes: ByteArray = Decoders.BASE64.decode(SECRET_KEY)
         return Keys.hmacShaKeyFor(keyBytes)
     }
+
+    fun extractAccountId(token: String?): String? {
+        return extractClaim(token) { claims ->
+            claims["accountId"] as? String
+        }
+    }
 }
 

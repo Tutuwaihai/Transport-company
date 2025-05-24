@@ -2,6 +2,8 @@ package com.transportcompany.transport_app.exception
 
 import com.transportcompany.transport_app.dto.ApiResponse
 import feign.FeignException
+import jakarta.persistence.EntityNotFoundException
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.FieldError
@@ -61,6 +63,30 @@ class GlobalExceptionHandler {
                 data = errors
             ),
             HttpStatus.BAD_REQUEST
+        )
+    }
+
+    @ExceptionHandler(EntityNotFoundException::class)
+    fun handleEntityNotFound(e: EntityNotFoundException): ResponseEntity<ApiResponse<Any>> {
+        return ResponseEntity(
+            ApiResponse(
+                code = 404,
+                status = HttpStatus.NOT_FOUND,
+                message = e.message ?: "Запрашиваемый объект не найден"
+            ),
+            HttpStatus.NOT_FOUND
+        )
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException::class)
+    fun handleDataIntegrityViolation(e: DataIntegrityViolationException): ResponseEntity<ApiResponse<Any>> {
+        return ResponseEntity(
+            ApiResponse(
+                code = 409,
+                status = HttpStatus.CONFLICT,
+                message = "Нарушение ограничений целостности данных: ${e.mostSpecificCause.message}"
+            ),
+            HttpStatus.CONFLICT
         )
     }
 

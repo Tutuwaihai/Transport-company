@@ -11,6 +11,6 @@ import org.mapstruct.Mapping
     injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 interface EmployeeMapper {
-    @Mapping(target = "cityTitle", defaultValue = "Неизвестно")
+    @Mapping(source = "city.title", target = "cityTitle", defaultValue = "Неизвестно")
     fun toDtoList(employees: List<Employee>): List<EmployeeDto>
 }
