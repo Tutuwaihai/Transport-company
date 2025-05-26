@@ -1,67 +1,101 @@
 package com.transportcompany.transport_app.exception
 
 import com.transportcompany.transport_app.dto.ApiResponse
-import feign.FeignException
+import jakarta.persistence.EntityNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.validation.FieldError
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.MethodArgumentNotValidException
-import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.RestControllerAdvice
+import java.time.format.DateTimeParseException
 
-@ControllerAdvice
+@RestControllerAdvice
 class GlobalExceptionHandler {
-    @ExceptionHandler(FeignException.Unauthorized::class)
-    fun handleUnauthorized(e: FeignException.Unauthorized): ResponseEntity<ApiResponse<Any>> {
-        return ResponseEntity(
-            ApiResponse(
-                code = 401,
-                status = HttpStatus.UNAUTHORIZED,
-                message = "Неверные учетные данные"
-            ),
-            HttpStatus.UNAUTHORIZED
+
+    @ExceptionHandler(EntityNotFoundException::class)
+    fun handleEntityNotFoundException(ex: EntityNotFoundException): ResponseEntity<ApiResponse<Nothing>> {
+        val response = ApiResponse(
+            code = HttpStatus.NOT_FOUND.value(),
+            status = HttpStatus.NOT_FOUND,
+            message = ex.message ?: "Запрашиваемый ресурс не найден",
+            data = null
         )
+        return ResponseEntity(response, HttpStatus.NOT_FOUND)
     }
 
-    @ExceptionHandler(FeignException.Forbidden::class)
-    fun handleForbidden(e: FeignException.Forbidden): ResponseEntity<ApiResponse<Any>> {
-        return ResponseEntity(
-            ApiResponse(
-                code = 403,
-                status = HttpStatus.FORBIDDEN,
-                message = "Доступ запрещен или пользователь не найден"
-            ),
-            HttpStatus.FORBIDDEN
+    @ExceptionHandler(IllegalStateException::class)
+    fun handleIllegalStateException(ex: IllegalStateException): ResponseEntity<ApiResponse<Nothing>> {
+        val status = when {
+            ex.message?.contains("authenticated", ignoreCase = true) == true -> HttpStatus.UNAUTHORIZED
+            else -> HttpStatus.BAD_REQUEST
+        }
+        
+        val response = ApiResponse(
+            code = status.value(),
+            status = status,
+            message = ex.message ?: "Ошибка в состоянии приложения",
+            data = null
         )
+        return ResponseEntity(response, status)
     }
 
-    @ExceptionHandler(FeignException::class)
-    fun handleGenericFeign(e: FeignException): ResponseEntity<ApiResponse<Any>> {
-        return ResponseEntity(
-            ApiResponse(
-                code = e.status(),
-                status = HttpStatus.resolve(e.status()) ?: HttpStatus.INTERNAL_SERVER_ERROR,
-                message = "Ошибка при обращении к внешнему API"
-            ),
-            HttpStatus.resolve(e.status()) ?: HttpStatus.INTERNAL_SERVER_ERROR
+    @ExceptionHandler(InvalidJwtTokenException::class)
+    fun handleInvalidJwtTokenException(ex: InvalidJwtTokenException): ResponseEntity<ApiResponse<Nothing>> {
+        val response = ApiResponse(
+            code = HttpStatus.UNAUTHORIZED.value(),
+            status = HttpStatus.UNAUTHORIZED,
+            message = ex.message ?: "Недействительный токен авторизации",
+            data = null
         )
+        return ResponseEntity(response, HttpStatus.UNAUTHORIZED)
+    }
+
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDeniedException(ex: AccessDeniedException): ResponseEntity<ApiResponse<Nothing>> {
+        val response = ApiResponse(
+            code = HttpStatus.FORBIDDEN.value(),
+            status = HttpStatus.FORBIDDEN,
+            message = "Отказано в доступе",
+            data = null
+        )
+        return ResponseEntity(response, HttpStatus.FORBIDDEN)
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleValidationException(ex: MethodArgumentNotValidException): ResponseEntity<ApiResponse<Any>> {
-        val errors = ex.bindingResult.allErrors
-            .filterIsInstance<FieldError>()
-            .associate { it.field to (it.defaultMessage ?: "Invalid value") }
-
-        return ResponseEntity(
-            ApiResponse(
-                code = 400,
-                status = HttpStatus.BAD_REQUEST,
-                message = "Ошибка валидации данных",
-                data = errors
-            ),
-            HttpStatus.BAD_REQUEST
+    fun handleValidationException(ex: MethodArgumentNotValidException): ResponseEntity<ApiResponse<Map<String, String>>> {
+        val errors = ex.bindingResult.fieldErrors.associate { 
+            it.field to (it.defaultMessage ?: "Ошибка валидации")
+        }
+        
+        val response = ApiResponse(
+            code = HttpStatus.BAD_REQUEST.value(),
+            status = HttpStatus.BAD_REQUEST,
+            message = "Ошибка валидации данных",
+            data = errors
         )
+        return ResponseEntity(response, HttpStatus.BAD_REQUEST)
     }
 
+    @ExceptionHandler(DateTimeParseException::class)
+    fun handleDateTimeParseException(ex: DateTimeParseException): ResponseEntity<ApiResponse<Nothing>> {
+        val response = ApiResponse(
+            code = HttpStatus.BAD_REQUEST.value(),
+            status = HttpStatus.BAD_REQUEST,
+            message = "Неверный формат даты/времени",
+            data = null
+        )
+        return ResponseEntity(response, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(Exception::class)
+    fun handleGenericException(ex: Exception): ResponseEntity<ApiResponse<Nothing>> {
+        val response = ApiResponse(
+            code = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            status = HttpStatus.INTERNAL_SERVER_ERROR,
+            message = "Внутренняя ошибка сервера",
+            data = null
+        )
+        return ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
 }

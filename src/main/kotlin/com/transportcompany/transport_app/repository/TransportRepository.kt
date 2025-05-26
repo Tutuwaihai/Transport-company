@@ -9,10 +9,9 @@ import org.springframework.stereotype.Repository
 interface TransportRepository : JpaRepository<Transport, Long> {
 
     @Query("""
-        SELECT t, t.mark, t.licensePlate, t.tonnage
-        FROM Transport t
-        left join fetch t.city
-        where t.isDeleted = 0
+        SELECT t FROM Transport t
+        LEFT JOIN FETCH t.city
+        WHERE t.isDeleted = 0
     """)
     fun findAllTransport(): List<Transport>
 }

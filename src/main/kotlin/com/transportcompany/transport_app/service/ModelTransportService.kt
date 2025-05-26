@@ -14,17 +14,6 @@ class ModelTransportService(
 
     fun getAllTrailers(): List<ModelTransportDto> {
         val trailers = modelTransportRepository.findAllTrailers()
-        return trailers.map {
-            ModelTransportDto(
-                id = it.id,
-                model = it.model,
-                tonnage = it.tonnage,
-                volume = it.volume
-            )
-        }
+        return modelTransportMapper.toDtoList(trailers)
     }
-//    fun getAllTrailers(): List<ModelTransportDto> {
-//        val trailers = modelTransportRepository.findAllTrailers()
-//        return modelTransportMapper.toDtoList(trailers)
-//    }
 }

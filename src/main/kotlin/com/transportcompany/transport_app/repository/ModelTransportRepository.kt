@@ -8,11 +8,10 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ModelTransportRepository : JpaRepository<ModelTransport, Long> {
 
-    @Query("""
-        SELECT mt, mt.model, mt.tonnage, mt.volume
-            FROM ModelTransport mt
-            WHERE mt.isdeleted = 0
-            AND (mt.type = 2 OR mt.type = 3)
-    """)
+    @Query(""" 
+        SELECT mt 
+        FROM ModelTransport mt 
+        WHERE mt.isdeleted = 0 AND (mt.type = 2 OR mt.type = 3) 
+        """)
     fun findAllTrailers(): List<ModelTransport>
 }

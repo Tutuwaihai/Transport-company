@@ -16,24 +16,21 @@ class TripUnionController(
     private val tripUnionService: TripUnionService
 ) {
 
-    @PostMapping
-    fun createTrip(@RequestBody @Valid request: TripRequest): ResponseEntity<TripResponse> {
-        val response = tripUnionService.createTrip(request)
-        return ResponseEntity.status(HttpStatus.CREATED).body(response)
-    }
+   @PostMapping 
+   @ResponseStatus(HttpStatus.CREATED) 
+    fun createTrip(
+        @RequestBody @Valid request: TripRequest
+    ): TripResponse = tripUnionService.createTrip(request)
 
-    @PutMapping("/{id}")
-    fun updateTrip(
+    @PutMapping("/{id}") 
+    fun updateTrip( 
         @PathVariable id: Long,
         @RequestBody @Valid request: TripRequest
-    ): ResponseEntity<TripResponse> {
-        val response = tripUnionService.updateTrip(id, request)
-        return ResponseEntity.ok(response)
-    }
+    ): TripResponse = tripUnionService.updateTrip(id, request)
 
-    @GetMapping("/{id}")
-    fun getTripById(@PathVariable id: Long): ResponseEntity<TripResponse> {
-        val response = tripUnionService.getTripUnionById(id)
-        return ResponseEntity.ok(response)
-    }
+    @GetMapping("/{id}") 
+    fun getTripById(
+        @PathVariable id: Long
+    ): TripResponse = tripUnionService.getTripUnionById(id)
+
 }
