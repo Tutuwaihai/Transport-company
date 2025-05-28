@@ -25,7 +25,7 @@ class JwtAuthenticationFilter(
     ) {
         val requestPath = request.requestURI
 
-        if (requestPath.startsWith("/auth/login")) {
+        if (requestPath.startsWith("/auth/")) {
             return filterChain.doFilter(request, response)
         }
 
@@ -55,14 +55,14 @@ class JwtAuthenticationFilter(
         }
 
 
-    val username = jwtService.extractUsername(token)
-    val authorities = jwtService.extractAuthorities(token)
+        val username = jwtService.extractUsername(token)
+        val authorities = jwtService.extractAuthorities(token)
 
-    if (SecurityContextHolder.getContext().authentication == null) {
-        val authToken = UsernamePasswordAuthenticationToken(username, null, authorities)
-        SecurityContextHolder.getContext().authentication = authToken
+        if (SecurityContextHolder.getContext().authentication == null) {
+            val authToken = UsernamePasswordAuthenticationToken(username, null, authorities)
+            SecurityContextHolder.getContext().authentication = authToken
+        }
+
+        filterChain.doFilter(request, response)
     }
-
-    filterChain.doFilter(request, response)
-}
 }
