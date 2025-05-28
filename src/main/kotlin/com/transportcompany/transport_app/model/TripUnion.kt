@@ -26,17 +26,21 @@ data class TripUnion(
     @Column(name = "isdeleted")
     val isDeleted: Int = 0,
 
-    @Column(name = "idroute")
-    var idRoute: Long?,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idroute")
+    var route: Route?,
 
-    @Column(name = "idtransport")
-    var idTransport: Long?,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idtransport")
+    var transport: Transport?,
 
-    @Column(name = "idtrailer")
-    var  idTrailer: Long? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idtrailer")
+    var trailer: Transport? = null,
 
-    @Column(name = "idemployee")
-    var idEmployee: Long?,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idemployee")
+    var employee: Employee?,
 
     @Column(name = "costs")
     var costs: BigDecimal? = null,
@@ -47,10 +51,11 @@ data class TripUnion(
     @Column(name = "is_active")
     var isActive: Int = 0,
 
-    @Column(name = "id_firm_carrier")
-    var idFirmCarrier: Long?,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_firm_carrier")
+    var firmCarrier: Firm?,
 
-    @Column(name = "id_firm_customer")
-    var idFirmCustomer: Long?
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_firm_customer")
+    var firmCustomer: Firm?
 )

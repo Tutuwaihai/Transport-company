@@ -7,7 +7,6 @@ import com.transportcompany.transport_app.dto.mappers.TripUnionMapper
 import com.transportcompany.transport_app.repository.TripUnionRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 
 @Service
 class TripUnionService(
@@ -16,11 +15,7 @@ class TripUnionService(
 ) {
 
     fun createTrip(request: TripUnionRequest): TripUnionResponse {
-        val entity = tripUnionMapper.toEntity(request).copy(
-            createDate = LocalDateTime.now(),
-            isActive = 0,
-            isDeleted = 0
-        )
+        val entity = tripUnionMapper.toEntity(request)
         val saved = tripUnionRepository.save(entity)
         return tripUnionMapper.toResponse(saved)
     }
@@ -29,11 +24,9 @@ class TripUnionService(
         val entity = tripUnionRepository.findById(id)
             .orElseThrow { EntityNotFoundException("Путевой лист с id=$id не найден") }
 
-        tripUnionMapper.updateTripUnionFromRequest(request, entity)
-        entity.modifyDate = LocalDateTime.now()
-        val updated = tripUnionRepository.save(entity)
-
-        return tripUnionMapper.toResponse(updated)
+        val updated = tripUnionMapper.updateTripUnionFromRequest(request, entity)
+        val saved = tripUnionRepository.save(updated)
+        return tripUnionMapper.toResponse(saved)
     }
 
     fun getTripUnionById(id: Long): TripUnionResponse {

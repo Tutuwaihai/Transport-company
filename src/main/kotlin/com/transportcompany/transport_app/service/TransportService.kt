@@ -13,18 +13,6 @@ class TransportService(
 ) {
     fun getAllTransport(): List<TransportDto> {
         val transports = transportRepository.findAllTransport()
-        return transports.map {
-            TransportDto(
-                id = it.id,
-                mark = it.mark,
-                licensePlate = it.licensePlate,
-                tonnage = it.tonnage,
-                cityTitle = it.city?.title ?: "нет города"
-            )
-        }
+        return transportMapper.toDtoList(transports)
     }
-//    fun getAllTransport(): List<TransportDto> {
-//        val drivers = transportRepository.findAllTransport()
-//        return transportMapper.toDtoList(drivers)
-//    }
 }

@@ -15,14 +15,12 @@ class RouteController(
 ) {
 
     @GetMapping
-    fun getAllRoutes(): List<RouteDto> = routeService.getAllRoutes()
+    fun getAllRoutes(): List<RouteDto> = 
+        routeService.getAllRoutes()
 
     @GetMapping("/filter")
     fun filterRoutes(
         @RequestParam(required = false) fromCityId: Long?,
         @RequestParam(required = false) toCityId: Long?
-    ): ResponseEntity<List<RouteDto>> {
-        val routes = routeService.filterRoutesByCityIds(fromCityId, toCityId)
-        return ResponseEntity.ok(routes)
-    }
+    ) = routeService.filterRoutesByCityIds(fromCityId, toCityId)
 }
