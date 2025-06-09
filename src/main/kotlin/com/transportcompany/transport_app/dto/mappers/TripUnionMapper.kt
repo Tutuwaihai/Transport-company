@@ -1,8 +1,8 @@
 package com.transportcompany.transport_app.dto.mappers
 
-import com.transportcompany.transport_app.dto.TripRequest
 import org.mapstruct.Mapper
-import com.transportcompany.transport_app.dto.TripResponse
+import com.transportcompany.transport_app.dto.TripUnionRequest
+import com.transportcompany.transport_app.dto.TripUnionResponse
 import com.transportcompany.transport_app.model.TripUnion
 import org.mapstruct.Mapping
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,7 +28,7 @@ abstract class TripUnionMapper {
     @Autowired
     protected lateinit var firmRepository: FirmRepository
 
-    fun toEntity(dto: TripRequest): TripUnion {
+    fun toEntity(dto: TripUnionRequest, userId: Long): TripUnion {
         val route = dto.idRoute?.let { 
             routeRepository.findById(it).orElseThrow { 
                 EntityNotFoundException("Маршрут с id=$it не найден") 
@@ -68,8 +68,8 @@ abstract class TripUnionMapper {
         return TripUnion(
             createDate = LocalDateTime.now(),
             modifyDate = LocalDateTime.now(),
-            createUser = 0,
-            modifyUser = 0,
+            createUser = userId,
+            modifyUser = null,
             isDeleted = 0,
             isActive = 0,
             route = route,
@@ -89,9 +89,10 @@ abstract class TripUnionMapper {
     @Mapping(target = "idEmployee", source = "employee.id")
     @Mapping(target = "idFirmCarrier", source = "firmCarrier.id")
     @Mapping(target = "idFirmCustomer", source = "firmCustomer.id")
-    abstract fun toResponse(entity: TripUnion): TripResponse
+    abstract fun toResponse(entity: TripUnion): TripUnionResponse
+    abstract fun toList(entity: List<TripUnion>): List<TripUnionResponse>
 
-    fun updateTripUnionFromRequest(dto: TripRequest, entity: TripUnion): TripUnion {
+    fun updateTripUnionFromRequest(dto: TripUnionRequest, entity: TripUnion, userId: Long): TripUnion {
         val route = dto.idRoute?.let { 
             routeRepository.findById(it).orElseThrow { 
                 EntityNotFoundException("Маршрут с id=$it не найден") 
@@ -132,7 +133,7 @@ abstract class TripUnionMapper {
 
         return entity.copy(
             modifyDate = LocalDateTime.now(),
-            modifyUser = 0,
+            modifyUser = userId,
             route = route,
             transport = transport,
             trailer = trailer,

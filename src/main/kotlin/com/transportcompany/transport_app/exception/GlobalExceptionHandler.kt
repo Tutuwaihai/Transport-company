@@ -88,6 +88,17 @@ class GlobalExceptionHandler {
         return ResponseEntity(response, HttpStatus.BAD_REQUEST)
     }
 
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<ApiResponse<Nothing>> {
+        val response = ApiResponse(
+            code = HttpStatus.BAD_REQUEST.value(),
+            status = HttpStatus.BAD_REQUEST,
+            message = ex.message ?: "Некорректный аргумент запроса",
+            data = null
+        )
+        return ResponseEntity(response, HttpStatus.BAD_REQUEST)
+    }
+
     @ExceptionHandler(Exception::class)
     fun handleGenericException(ex: Exception): ResponseEntity<ApiResponse<Nothing>> {
         val response = ApiResponse(

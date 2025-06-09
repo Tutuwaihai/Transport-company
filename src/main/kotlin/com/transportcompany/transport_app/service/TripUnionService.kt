@@ -1,37 +1,55 @@
 package com.transportcompany.transport_app.service
 
-import com.transportcompany.transport_app.dto.TripRequest
-import com.transportcompany.transport_app.dto.TripResponse
+
+import com.transportcompany.transport_app.dto.TripUnionRequest
+import com.transportcompany.transport_app.dto.TripUnionResponse
 import com.transportcompany.transport_app.dto.mappers.TripUnionMapper
+import com.transportcompany.transport_app.model.TripUnion
 import com.transportcompany.transport_app.repository.TripUnionRepository
 import jakarta.persistence.EntityNotFoundException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
+import org.springframework.security.core.context.SecurityContextHolder
+import com.transportcompany.transport_app.repository.EmployeeRepository
 
 @Service
 class TripUnionService(
     private val tripUnionRepository: TripUnionRepository,
-    private val tripUnionMapper: TripUnionMapper
+    private val tripUnionMapper: TripUnionMapper,
+    private val employeeRepository: EmployeeRepository
 ) {
 
-    fun createTrip(request: TripRequest): TripResponse {
-        val entity = tripUnionMapper.toEntity(request)
+    fun createTrip(request: TripUnionRequest): TripUnionResponse {
+        val username = SecurityContextHolder.getContext().authentication?.name
+            ?: throw IllegalStateException("Пользователь не авторизован")
+        val user = employeeRepository.findByEmail(username)
+            ?: throw IllegalArgumentException("Пользователь с email $username не найден")
+        val entity = tripUnionMapper.toEntity(request, user.id)
         val saved = tripUnionRepository.save(entity)
         return tripUnionMapper.toResponse(saved)
     }
 
-    fun updateTrip(id: Long, request: TripRequest): TripResponse {
+    fun updateTrip(id: Long, request: TripUnionRequest): TripUnionResponse {
+        val username = SecurityContextHolder.getContext().authentication?.name
+            ?: throw IllegalStateException("Пользователь не авторизован")
+        val user = employeeRepository.findByEmail(username)
+            ?: throw IllegalArgumentException("Пользователь с email $username не найден")
         val entity = tripUnionRepository.findById(id)
             .orElseThrow { EntityNotFoundException("Путевой лист с id=$id не найден") }
-
-        val updated = tripUnionMapper.updateTripUnionFromRequest(request, entity)
+        val updated = tripUnionMapper.updateTripUnionFromRequest(request, entity, user.id)
         val saved = tripUnionRepository.save(updated)
         return tripUnionMapper.toResponse(saved)
     }
 
-    fun getTripUnionById(id: Long): TripResponse {
+    fun getTripUnionById(id: Long): TripUnionResponse {
         val entity = tripUnionRepository.findById(id)
             .orElseThrow { NoSuchElementException("Путевой лист с id=$id не найден") }
         return tripUnionMapper.toResponse(entity)
+    }
+
+    fun getAllTripUnions(pageable: Pageable): Page<TripUnionResponse> {
+        return tripUnionRepository.findAllActiveAndNotDeleted(pageable)
+            .map { tripUnionMapper.toResponse(it) }
     }
 }
