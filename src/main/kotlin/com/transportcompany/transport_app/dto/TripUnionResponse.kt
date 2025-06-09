@@ -14,6 +14,5 @@ data class TripUnionResponse(
     val idTransport: Long,
     val idTrailer: Long?,
     val costs: BigDecimal?,
-    val description: String?,
-    val isActive: Int
+    val description: String?
 )

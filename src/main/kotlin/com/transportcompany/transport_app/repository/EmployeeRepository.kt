@@ -14,4 +14,6 @@ interface EmployeeRepository : JpaRepository<Employee, Long> {
         WHERE e.isDeleted = 0 AND e.workerType = 4
     """)
     fun findAllDrivers(): List<Employee>
+
+    fun findByEmail(email: String): Employee?
 }

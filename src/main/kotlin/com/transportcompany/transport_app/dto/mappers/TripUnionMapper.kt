@@ -28,7 +28,7 @@ abstract class TripUnionMapper {
     @Autowired
     protected lateinit var firmRepository: FirmRepository
 
-    fun toEntity(dto: TripUnionRequest): TripUnion {
+    fun toEntity(dto: TripUnionRequest, userId: Long): TripUnion {
         val route = dto.idRoute?.let { 
             routeRepository.findById(it).orElseThrow { 
                 EntityNotFoundException("Маршрут с id=$it не найден") 
@@ -68,8 +68,8 @@ abstract class TripUnionMapper {
         return TripUnion(
             createDate = LocalDateTime.now(),
             modifyDate = LocalDateTime.now(),
-            createUser = 0,
-            modifyUser = 0,
+            createUser = userId,
+            modifyUser = null,
             isDeleted = 0,
             isActive = 0,
             route = route,
@@ -90,8 +90,9 @@ abstract class TripUnionMapper {
     @Mapping(target = "idFirmCarrier", source = "firmCarrier.id")
     @Mapping(target = "idFirmCustomer", source = "firmCustomer.id")
     abstract fun toResponse(entity: TripUnion): TripUnionResponse
+    abstract fun toList(entity: List<TripUnion>): List<TripUnionResponse>
 
-    fun updateTripUnionFromRequest(dto: TripUnionRequest, entity: TripUnion): TripUnion {
+    fun updateTripUnionFromRequest(dto: TripUnionRequest, entity: TripUnion, userId: Long): TripUnion {
         val route = dto.idRoute?.let { 
             routeRepository.findById(it).orElseThrow { 
                 EntityNotFoundException("Маршрут с id=$it не найден") 
@@ -132,7 +133,7 @@ abstract class TripUnionMapper {
 
         return entity.copy(
             modifyDate = LocalDateTime.now(),
-            modifyUser = 0,
+            modifyUser = userId,
             route = route,
             transport = transport,
             trailer = trailer,

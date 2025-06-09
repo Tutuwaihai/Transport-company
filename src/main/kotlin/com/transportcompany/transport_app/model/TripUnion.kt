@@ -18,10 +18,10 @@ data class TripUnion(
     val createDate: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "createuser")
-    val createUser: Long,
+    val createUser: Long? = null,
 
     @Column(name = "modifyuser")
-    val modifyUser: Long,
+    val modifyUser: Long? = null,
 
     @Column(name = "isdeleted")
     val isDeleted: Int = 0,
